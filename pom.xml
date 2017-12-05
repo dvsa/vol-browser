@@ -7,7 +7,30 @@
     <groupId>org.dvsa.testing.lib</groupId>
     <artifactId>browser</artifactId>
     <version>0.3</version>
+
+    <properties>
+        <webDriverManagerVersion>1.7.2</webDriverManagerVersion>
+        <seleniumVersion>3.7.1</seleniumVersion>
+        <uriConstructorVersion>1.1.3</uriConstructorVersion>
+        <junitVersion>4.12</junitVersion>
+        <browser>chrome</browser>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>devappci-shd-pri-qarepo</id>
+            <url>s3://devappci-shd-pri-qarepo</url>
+        </repository>
+    </distributionManagement>
+
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build</groupId>
+                <artifactId>aws-maven</artifactId>
+                <version>5.0.0.RELEASE</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -17,16 +40,19 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.bazaarvoice.maven.plugins</groupId>
+                <artifactId>s3-upload-maven-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <bucketName>devappci-shd-pri-qarepo</bucketName>
+                    <source>C:\Users\rodney.ruswa\.m2\repository\org\dvsa\testing\lib\browser</source>
+                    <destination>org/dvsa/testing/lib/browser</destination>
+                    <recursive>true</recursive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <webDriverManagerVersion>1.7.2</webDriverManagerVersion>
-        <seleniumVersion>3.7.1</seleniumVersion>
-        <uriConstructorVersion>1.1.3</uriConstructorVersion>
-        <junitVersion>4.12</junitVersion>
-        <browser>chrome</browser>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -62,8 +88,6 @@
             <version>${junitVersion}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 
 </project>
