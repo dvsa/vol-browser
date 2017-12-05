@@ -19,12 +19,11 @@ public class BrowserTest {
 
     @Test
     public void goToLogonPage(){
-        Browser.open(url);
         Assert.assertEquals(url, Browser.getURL());
     }
 
     @After
     public void tearDown(){
-        Browser.close();
+        Browser.quit();
     }
 }

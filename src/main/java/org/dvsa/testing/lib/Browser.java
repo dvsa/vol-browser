@@ -36,8 +36,8 @@ public class Browser {
         getDriver().get(url);
     }
 
-    public static void close(){
-        getDriver().close();
+    public static void quit(){
+        getDriver().quit();
     }
 
     private static WebDriver getNewInstance(BrowserName browserName){
