@@ -2,6 +2,7 @@ package org.dvsa.testing.lib;
 
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
+import org.dvsa.testing.lib.config.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,7 +10,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.dvsa.testing.lib.BrowserName.*;
+import static org.dvsa.testing.lib.BrowserName.CHROME;
+import static org.dvsa.testing.lib.BrowserName.FIREFOX;
 
 public class Browser {
 
@@ -27,13 +29,18 @@ public class Browser {
         Browser.driver = driver;
     }
 
-    public static void open(String url){
+    public static void open(@NotNull String URL){
         if(getDriver() == null){
+            Configuration.loadDefaultProperties();
             setDriver(getNewInstance(getName(System.getProperty("browser"))));
             setImplicitWait(MAX_IMPLICIT_WAIT);
         }
 
-        getDriver().get(url);
+        getDriver().get(URL);
+    }
+
+    public static void go(@NotNull String URL){
+        open(URL);
     }
 
     public static void quit(){
