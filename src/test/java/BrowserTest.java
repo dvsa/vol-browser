@@ -1,29 +1,52 @@
+import activesupport.file.Files;
+import activesupport.system.Properties;
 import org.dvsa.testing.lib.Browser;
+import org.dvsa.testing.lib.Environment;
 import org.dvsa.testing.lib.URI;
 import org.dvsa.testing.lib.utils.ApplicationType;
-import org.dvsa.testing.lib.utils.Environment;
+import org.dvsa.testing.lib.utils.EnvironmentType;
 import org.junit.*;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
 public class BrowserTest {
-    private static String url = URI.build(ApplicationType.EXTERNAL, Environment.PRODUCTION, "auth/login/");
+
+        private static EnvironmentType environmentType; //= Environment.enumType(System.getProperty("env"));
+        private static String URL; //= URI.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
 
     @BeforeClass
-    public static void beforeAll(){
-        System.setProperty("browser", "chrome");
+    public static void beforeAll() throws IOException {
+        if(java.nio.file.Files.exists(Paths.get("properties/config.properties"))) {
+            Properties.loadConfigPropertiesFromFile();
+        }
+
+        if(System.getProperty("env") == null){
+            Properties.writeToConfigPropertyFile("env", "da");
+        }
+
+        if(System.getProperty("browser") == null){
+            Properties.writeToConfigPropertyFile("browser", "chrome");
+        }
+
+        environmentType = Environment.enumType(System.getProperty("env"));
+        URL = URI.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
     }
 
     @Before
     public void setUp(){
-        Browser.open(url);
+        Browser.open(URL);
     }
 
     @Test
     public void goToLogonPage(){
-        Assert.assertEquals(url, Browser.getURL());
+        Assert.assertEquals(URL, Browser.getURL());
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() throws IOException {
         Browser.quit();
+        Files.deleteFolderAndItsContent(Paths.get("properties/config.properties"));
     }
+
 }
