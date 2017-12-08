@@ -29,6 +29,7 @@ public class BrowserTest {
             Properties.writeToConfigPropertyFile("browser", "chrome");
         }
 
+        Properties.loadConfigPropertiesFromFile();
         environmentType = Environment.enumType(System.getProperty("env"));
         URL = URI.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
     }
