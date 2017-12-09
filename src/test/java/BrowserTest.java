@@ -17,10 +17,6 @@ public class BrowserTest {
 
     @BeforeClass
     public static void beforeAll() throws IOException {
-        if(java.nio.file.Files.exists(Paths.get("properties/config.properties"))) {
-            Properties.loadConfigPropertiesFromFile();
-        }
-
         if(System.getProperty("env") == null){
             Properties.writeToConfigPropertyFile("env", "da");
         }
