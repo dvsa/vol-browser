@@ -1,6 +1,5 @@
 package org.dvsa.testing.lib;
 
-import activesupport.system.Properties;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 import static org.dvsa.testing.lib.BrowserName.CHROME;
