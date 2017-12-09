@@ -12,8 +12,8 @@ import java.nio.file.Paths;
 
 public class BrowserTest {
 
-        private static EnvironmentType environmentType; //= Environment.enumType(System.getProperty("env"));
-        private static String URL; //= URI.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
+        private static EnvironmentType environmentType;
+        private static String URL;
 
     @BeforeClass
     public static void beforeAll() throws IOException {
