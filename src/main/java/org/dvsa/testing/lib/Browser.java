@@ -32,6 +32,20 @@ public class Browser {
     }
 
     public static void open(@NotNull String URL) {
+        loadConfigBeforeCreatingDriver();
+        setBrowserOnFirstRunOrAfterClosure();
+        setImplicitWait(MAX_IMPLICIT_WAIT);
+
+        getDriver().get(URL);
+    }
+
+    private static void setBrowserOnFirstRunOrAfterClosure(){
+        if(getDriver() == null || getDriver().toString().contains("null")){
+            setDriver(getNewInstance(getName(System.getProperty("browser"))));
+        }
+    }
+
+    private static void loadConfigBeforeCreatingDriver(){
         if(getDriver() == null){
 
             // Adds properties specified in properties/config.properties into system properties
@@ -42,12 +56,7 @@ public class Browser {
                     e.printStackTrace();
                 }
             }
-
-            setDriver(getNewInstance(getName(System.getProperty("browser"))));
-            setImplicitWait(MAX_IMPLICIT_WAIT);
         }
-
-        getDriver().get(URL);
     }
 
     public static void go(@NotNull String URL){
