@@ -40,9 +40,13 @@ public class Browser {
     }
 
     private static void setBrowserOnFirstRunOrAfterClosure(){
-        if(getDriver() == null || getDriver().toString().contains("null")){
+        if(getDriver() == null || browserClosed()){
             setDriver(getNewInstance(getName(System.getProperty("browser"))));
         }
+    }
+
+    private static boolean browserClosed(){
+        getDriver().toString().contains("null");
     }
 
     private static void loadConfigBeforeCreatingDriver(){
