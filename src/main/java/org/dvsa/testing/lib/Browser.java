@@ -46,7 +46,7 @@ public class Browser {
     }
 
     private static boolean browserClosed(){
-        getDriver().toString().contains("null");
+        return getDriver().toString().contains("null");
     }
 
     private static void loadConfigBeforeCreatingDriver(){
