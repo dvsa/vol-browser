@@ -34,8 +34,6 @@ public class Browser {
     public static void open(@NotNull String URL) {
         loadConfigBeforeCreatingDriver();
         setBrowserOnFirstRunOrAfterClosure();
-        setImplicitWait(MAX_IMPLICIT_WAIT);
-
         getDriver().get(URL);
     }
 
