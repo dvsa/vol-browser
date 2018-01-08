@@ -38,12 +38,12 @@ public class Browser {
     }
 
     private static void setBrowserOnFirstRunOrAfterClosure(){
-        if(getDriver() == null || browserClosed()){
+        if(getDriver() == null || isBrowserClosed()){
             setDriver(getNewInstance(getName(System.getProperty("browser"))));
         }
     }
 
-    private static boolean browserClosed(){
+    private static boolean isBrowserClosed(){
         return getDriver().toString().contains("null");
     }
 
@@ -66,7 +66,9 @@ public class Browser {
     }
 
     public static void quit(){
-        getDriver().quit();
+        if(!isBrowserClosed()){
+            getDriver().quit();
+        }
     }
 
     private static WebDriver getNewInstance(BrowserName browserName){
