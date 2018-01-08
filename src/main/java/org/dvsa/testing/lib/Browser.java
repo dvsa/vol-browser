@@ -44,7 +44,13 @@ public class Browser {
     }
 
     private static boolean isBrowserClosed(){
-        return getDriver().toString().contains("null");
+        boolean isBrowserClosed = true;
+
+        if (getDriver() != null) {
+            isBrowserClosed = getDriver().toString().contains("null");
+        }
+
+        return isBrowserClosed;
     }
 
     private static void loadConfigBeforeCreatingDriver(){
