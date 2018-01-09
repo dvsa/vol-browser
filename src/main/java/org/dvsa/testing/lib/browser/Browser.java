@@ -62,11 +62,12 @@ public class Browser {
     public static boolean isClosed() {
         boolean isBrowserClosed = true;
 
-        try {
-            getDriver();
-            isBrowserClosed = getDriver().toString().contains("null");
-        } catch (UninitialisedDriverException e) {
-            System.out.println(Output.printColoredLog("[WARNING] Driver was never initialised/set"));
+        if(isInitialised()){
+            // UninitialisedDriverException won't ever be thrown as its state is checked by #isInitialised before
+            try {
+                isBrowserClosed = getDriver().toString().contains("null");
+            } catch (UninitialisedDriverException e) {
+            }
         }
 
         return isBrowserClosed;
@@ -74,6 +75,18 @@ public class Browser {
 
     public static boolean isNotClosed(){
         return !isClosed();
+    }
+
+    public static boolean isInitialised(){
+        boolean isInitialised = true;
+
+        try {
+            getDriver();
+        } catch (UninitialisedDriverException e) {
+            isInitialised = false;
+        }
+
+        return isInitialised;
     }
 
     private static void loadConfigBeforeCreatingDriver(){
