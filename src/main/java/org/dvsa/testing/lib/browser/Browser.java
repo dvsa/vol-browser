@@ -53,13 +53,13 @@ public class Browser {
         }
 
         // Sets a new driver instance if the current one has been closed. Note that closing a driver only alters the
-        // state of the driver object and doesn't delete it. Browser#isBrowserClosed checks which state the driver is in
-        if(isBrowserClosed()){
+        // state of the driver object and doesn't delete it. Browser#isClosed checks which state the driver is in
+        if(isClosed()){
             setDriver(getNewInstance(getName(Properties.get("browser"))));
         }
     }
 
-    public static boolean isBrowserClosed() {
+    public static boolean isClosed() {
         boolean isBrowserClosed = true;
 
         try {
@@ -70,6 +70,10 @@ public class Browser {
         }
 
         return isBrowserClosed;
+    }
+
+    public static boolean isNotClosed(){
+        return !isClosed();
     }
 
     private static void loadConfigBeforeCreatingDriver(){
@@ -92,7 +96,7 @@ public class Browser {
     }
 
     public static void quit(){
-        if(!isBrowserClosed()){
+        if(!isClosed()){
             try {
                 getDriver().quit();
             } catch (UninitialisedDriverException e) {
