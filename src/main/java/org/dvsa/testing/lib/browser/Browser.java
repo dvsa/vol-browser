@@ -1,8 +1,11 @@
-package org.dvsa.testing.lib;
+package org.dvsa.testing.lib.browser;
 
 import activesupport.system.Properties;
+import activesupport.system.out.Output;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
+import org.dvsa.testing.lib.browser.enums.BrowserName;
+import org.dvsa.testing.lib.browser.exceptions.UninitialisedDriverException;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -12,8 +15,8 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import static org.dvsa.testing.lib.BrowserName.CHROME;
-import static org.dvsa.testing.lib.BrowserName.FIREFOX;
+import static org.dvsa.testing.lib.browser.enums.BrowserName.CHROME;
+import static org.dvsa.testing.lib.browser.enums.BrowserName.FIREFOX;
 
 public class Browser {
 
@@ -23,7 +26,11 @@ public class Browser {
     private static WebDriver driver;
 
 
-    public static WebDriver getDriver(){
+    public static WebDriver getDriver() throws UninitialisedDriverException {
+        if (Browser.driver == null) {
+            throw new UninitialisedDriverException();
+        }
+
         return Browser.driver;
     }
 
@@ -31,31 +38,44 @@ public class Browser {
         Browser.driver = driver;
     }
 
-    public static void open(@NotNull String URL) {
+    public static void open(@NotNull String URL) throws UninitialisedDriverException {
         loadConfigBeforeCreatingDriver();
         setBrowserOnFirstRunOrAfterClosure();
         getDriver().get(URL);
     }
 
     private static void setBrowserOnFirstRunOrAfterClosure(){
-        if(getDriver() == null || isBrowserClosed()){
-            setDriver(getNewInstance(getName(System.getProperty("browser"))));
+        // This exception is handled as this method throws an exception on the first run as driver won't be set
+        try {
+            getDriver();
+        } catch (UninitialisedDriverException e) {
+            setDriver(getNewInstance(getName(Properties.get("browser"))));
+        }
+
+        // Sets a new driver instance if the current one has been closed. Note that closing a driver only alters the
+        // state of the driver object and doesn't delete it. Browser#isBrowserClosed checks which state the driver is in
+        if(isBrowserClosed()){
+            setDriver(getNewInstance(getName(Properties.get("browser"))));
         }
     }
 
-    private static boolean isBrowserClosed(){
+    private static boolean isBrowserClosed() {
         boolean isBrowserClosed = true;
 
-        if (getDriver() != null) {
+        try {
+            getDriver();
             isBrowserClosed = getDriver().toString().contains("null");
+        } catch (UninitialisedDriverException e) {
+            System.out.println(Output.printColoredLog("[WARNING] Driver was never initialised/set"));
         }
 
         return isBrowserClosed;
     }
 
     private static void loadConfigBeforeCreatingDriver(){
-        if(getDriver() == null){
-
+        try {
+            getDriver();
+        } catch (UninitialisedDriverException exception) {
             // Adds properties specified in properties/config.properties into system properties
             if(java.nio.file.Files.exists(Paths.get("properties/config.properties"))) {
                 try {
@@ -67,13 +87,17 @@ public class Browser {
         }
     }
 
-    public static void go(@NotNull String URL){
+    public static void go(@NotNull String URL) throws UninitialisedDriverException {
         open(URL);
     }
 
     public static void quit(){
         if(!isBrowserClosed()){
-            getDriver().quit();
+            try {
+                getDriver().quit();
+            } catch (UninitialisedDriverException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -113,19 +137,19 @@ public class Browser {
         return browserName;
     }
 
-    public static String getURL(){
+    public static String getURL() throws UninitialisedDriverException {
         return getDriver().getCurrentUrl();
     }
 
-    public static String getPageTitle(){
+    public static String getPageTitle() throws UninitialisedDriverException {
         return getDriver().getTitle();
     }
 
-    public static void setImplicitWait(int seconds){
+    public static void setImplicitWait(int seconds) throws UninitialisedDriverException {
         setImplicitWait(seconds, TimeUnit.SECONDS);
     }
 
-    public static void setImplicitWait(int time, TimeUnit timeUnit){
+    public static void setImplicitWait(int time, TimeUnit timeUnit) throws UninitialisedDriverException {
         Browser.getDriver().manage().timeouts().implicitlyWait(time, timeUnit);
     }
 

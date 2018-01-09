@@ -1,8 +1,9 @@
 import activesupport.file.Files;
 import activesupport.system.Properties;
-import org.dvsa.testing.lib.Browser;
+import org.dvsa.testing.lib.browser.Browser;
 import org.dvsa.testing.lib.Environment;
 import org.dvsa.testing.lib.URI;
+import org.dvsa.testing.lib.browser.exceptions.UninitialisedDriverException;
 import org.dvsa.testing.lib.utils.ApplicationType;
 import org.dvsa.testing.lib.utils.EnvironmentType;
 import org.junit.*;
@@ -31,12 +32,12 @@ public class BrowserTest {
     }
 
     @Before
-    public void setUp(){
+    public void setUp() throws UninitialisedDriverException {
         Browser.open(URL);
     }
 
     @Test
-    public void goToLogonPage(){
+    public void goToLogonPage() throws UninitialisedDriverException {
         Assert.assertEquals(URL, Browser.getURL());
     }
 
