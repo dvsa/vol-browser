@@ -59,7 +59,7 @@ public class Browser {
         }
     }
 
-    private static boolean isBrowserClosed() {
+    public static boolean isBrowserClosed() {
         boolean isBrowserClosed = true;
 
         try {
