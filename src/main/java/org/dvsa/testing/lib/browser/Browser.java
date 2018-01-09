@@ -1,7 +1,6 @@
 package org.dvsa.testing.lib.browser;
 
 import activesupport.system.Properties;
-import activesupport.system.out.Output;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import org.dvsa.testing.lib.browser.enums.BrowserName;
@@ -38,10 +37,12 @@ public class Browser {
         Browser.driver = driver;
     }
 
-    public static void open(@NotNull String URL) throws UninitialisedDriverException {
+    public static void open(@NotNull String URL) {
         loadConfigBeforeCreatingDriver();
         setBrowserOnFirstRunOrAfterClosure();
-        getDriver().get(URL);
+        try {
+            getDriver().get(URL);
+        } catch (UninitialisedDriverException e){}
     }
 
     private static void setBrowserOnFirstRunOrAfterClosure(){
