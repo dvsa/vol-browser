@@ -1,5 +1,6 @@
 package org.dvsa.testing.lib.browser;
 
+import activesupport.MissingRequiredArgument;
 import activesupport.system.Properties;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
@@ -37,7 +38,7 @@ public class Browser {
         Browser.driver = driver;
     }
 
-    public static void open(@NotNull String URL) {
+    public static void open(@NotNull String URL) throws MissingRequiredArgument {
         loadConfigBeforeCreatingDriver();
         setBrowserOnFirstRunOrAfterClosure();
         try {
@@ -45,18 +46,18 @@ public class Browser {
         } catch (UninitialisedDriverException e){}
     }
 
-    private static void setBrowserOnFirstRunOrAfterClosure(){
+    private static void setBrowserOnFirstRunOrAfterClosure() throws MissingRequiredArgument {
         // This exception is handled as this method throws an exception on the first run as driver won't be set
         try {
             getDriver();
         } catch (UninitialisedDriverException e) {
-            setDriver(getNewInstance(getName(Properties.get("browser"))));
+            setDriver(getNewInstance(getName(Properties.get("browser", true))));
         }
 
         // Sets a new driver instance if the current one has been closed. Note that closing a driver only alters the
         // state of the driver object and doesn't delete it. Browser#isClosed checks which state the driver is in
         if(isClosed()){
-            setDriver(getNewInstance(getName(Properties.get("browser"))));
+            setDriver(getNewInstance(getName(Properties.get("browser", true))));
         }
     }
 
@@ -105,7 +106,7 @@ public class Browser {
         }
     }
 
-    public static void go(@NotNull String URL) throws UninitialisedDriverException {
+    public static void go(@NotNull String URL) throws MissingRequiredArgument {
         open(URL);
     }
 

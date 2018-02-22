@@ -1,11 +1,12 @@
+import activesupport.MissingRequiredArgument;
 import activesupport.file.Files;
 import activesupport.system.Properties;
 import org.dvsa.testing.lib.browser.Browser;
-import org.dvsa.testing.lib.Environment;
-import org.dvsa.testing.lib.URI;
+import org.dvsa.testing.lib.uri.Environment;
+import org.dvsa.testing.lib.uri.URI;
 import org.dvsa.testing.lib.browser.exceptions.UninitialisedDriverException;
-import org.dvsa.testing.lib.utils.ApplicationType;
-import org.dvsa.testing.lib.utils.EnvironmentType;
+import org.dvsa.testing.lib.uri.utils.ApplicationType;
+import org.dvsa.testing.lib.uri.utils.EnvironmentType;
 import org.junit.*;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class BrowserTest {
     }
 
     @Before
-    public void setUp() throws UninitialisedDriverException {
+    public void setUp() throws MissingRequiredArgument {
         Browser.open(URL);
     }
 
