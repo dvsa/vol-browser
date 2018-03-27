@@ -25,8 +25,18 @@ public class Browser {
     private static String unsupportedBrowserTemplate = "%s is not a supported browser.";
     private static WebDriver driver;
 
+    private static final Thread CLOSE_THREAD = new Thread() {
+        @Override
+        public void run() {
+            getDriver().close();
+        }
+    };
 
-    public static WebDriver getDriver() throws UninitialisedDriverException {
+    static {
+        Runtime.getRuntime().addShutdownHook(CLOSE_THREAD);
+    }
+
+    public static WebDriver getDriver() {
         if (Browser.driver == null) {
             throw new UninitialisedDriverException();
         }
@@ -112,6 +122,9 @@ public class Browser {
 
     public static void quit(){
         if(!isClosed()){
+            if (Thread.currentThread() != CLOSE_THREAD) {
+                throw new UnsupportedOperationException("You shouldn't quit this WebDriver. It's shared and will quit when the JVM exits.");
+            }
             try {
                 getDriver().quit();
             } catch (UninitialisedDriverException e) {
@@ -156,19 +169,27 @@ public class Browser {
         return browserName;
     }
 
-    public static String getURL() throws UninitialisedDriverException {
+    public static String getURL() {
         return getDriver().getCurrentUrl();
     }
 
-    public static String getPageTitle() throws UninitialisedDriverException {
+    public static String getPageTitle() {
         return getDriver().getTitle();
     }
 
-    public static void setImplicitWait(int seconds) throws UninitialisedDriverException {
+    public static void deleteCookies() {
+        getDriver().manage().deleteAllCookies();
+    }
+
+    public static void refresh() {
+        getDriver().navigate().refresh();
+    }
+
+    public static void setImplicitWait(int seconds) {
         setImplicitWait(seconds, TimeUnit.SECONDS);
     }
 
-    public static void setImplicitWait(int time, TimeUnit timeUnit) throws UninitialisedDriverException {
+    public static void setImplicitWait(int time, TimeUnit timeUnit) {
         Browser.getDriver().manage().timeouts().implicitlyWait(time, timeUnit);
     }
 

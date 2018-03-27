@@ -44,7 +44,6 @@ public class BrowserTest {
 
     @After
     public void tearDown() throws IOException {
-        Browser.quit();
         Files.deleteFolderAndItsContent(Paths.get("properties/config.properties"));
     }
 
