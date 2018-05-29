@@ -12,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +49,11 @@ public class Browser {
         Browser.driver = driver;
     }
 
-    public static void open(@NotNull String URL) throws MissingRequiredArgument {
+    public static void open(@NotNull URL URL) {
+        open(URL.toString());
+    }
+
+    public static void open(@NotNull String URL) {
         loadConfigBeforeCreatingDriver();
         setBrowserOnFirstRunOrAfterClosure();
         try {
@@ -56,7 +61,7 @@ public class Browser {
         } catch (UninitialisedDriverException e){}
     }
 
-    private static void setBrowserOnFirstRunOrAfterClosure() throws MissingRequiredArgument {
+    private static void setBrowserOnFirstRunOrAfterClosure() {
         // This exception is handled as this method throws an exception on the first run as driver won't be set
         try {
             getDriver();
@@ -116,7 +121,7 @@ public class Browser {
         }
     }
 
-    public static void go(@NotNull String URL) throws MissingRequiredArgument {
+    public static void go(@NotNull String URL) {
         open(URL);
     }
 

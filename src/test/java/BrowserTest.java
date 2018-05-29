@@ -2,11 +2,10 @@ import activesupport.MissingRequiredArgument;
 import activesupport.file.Files;
 import activesupport.system.Properties;
 import org.dvsa.testing.lib.browser.Browser;
-import org.dvsa.testing.lib.uri.Environment;
-import org.dvsa.testing.lib.uri.URI;
 import org.dvsa.testing.lib.browser.exceptions.UninitialisedDriverException;
-import org.dvsa.testing.lib.uri.utils.ApplicationType;
-import org.dvsa.testing.lib.uri.utils.EnvironmentType;
+import org.dvsa.testing.lib.url.webapp.URL;
+import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
+import org.dvsa.testing.lib.url.utils.EnvironmentType;
 import org.junit.*;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ import java.nio.file.Paths;
 public class BrowserTest {
 
         private static EnvironmentType environmentType;
-        private static String URL;
+        private static java.net.URL myURL;
 
     @BeforeClass
     public static void beforeAll() throws IOException {
@@ -28,18 +27,18 @@ public class BrowserTest {
         }
 
         Properties.loadConfigPropertiesFromFile();
-        environmentType = Environment.enumType(System.getProperty("env"));
-        URL = URI.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
+        environmentType = EnvironmentType.getEnum(System.getProperty("env"));
+        myURL = URL.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
     }
 
     @Before
     public void setUp() throws MissingRequiredArgument {
-        Browser.open(URL);
+        Browser.open(myURL);
     }
 
     @Test
     public void goToLogonPage() throws UninitialisedDriverException {
-        Assert.assertEquals(URL, Browser.getURL());
+        Assert.assertEquals(myURL.toString(), Browser.getURL());
     }
 
     @After
