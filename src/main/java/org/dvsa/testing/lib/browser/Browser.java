@@ -1,6 +1,5 @@
 package org.dvsa.testing.lib.browser;
 
-import activesupport.MissingRequiredArgument;
 import activesupport.system.Properties;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
