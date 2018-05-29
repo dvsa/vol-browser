@@ -124,6 +124,10 @@ public class Browser {
         open(URL);
     }
 
+    public static void go(@NotNull URL URL) {
+        open(URL);
+    }
+
     public static void quit(){
         if(!isClosed()){
             if (Thread.currentThread() != CLOSE_THREAD) {
