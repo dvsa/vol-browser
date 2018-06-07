@@ -28,7 +28,8 @@ public class Browser {
     private static final Thread CLOSE_THREAD = new Thread() {
         @Override
         public void run() {
-            getDriver().close();
+            if (isInitialised())
+                getDriver().close();
         }
     };
 
