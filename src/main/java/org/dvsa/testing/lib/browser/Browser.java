@@ -3,35 +3,25 @@ package org.dvsa.testing.lib.browser;
 import activesupport.system.Properties;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
-import org.dvsa.testing.lib.browser.enums.BrowserName;
+import org.dvsa.testing.lib.browser.enums.BrowserEnum;
 import org.dvsa.testing.lib.browser.exceptions.UninitialisedDriverException;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.FileNotFoundException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import static org.dvsa.testing.lib.browser.enums.BrowserName.CHROME;
-import static org.dvsa.testing.lib.browser.enums.BrowserName.FIREFOX;
-
 public class Browser {
-
-    private static final int MAX_IMPLICIT_WAIT = 15;
 
     private static String unsupportedBrowserTemplate = "%s is not a supported browser.";
     private static WebDriver driver;
 
-    private static final Thread CLOSE_THREAD = new Thread() {
-        @Override
-        public void run() {
-            if (isInitialised())
-                getDriver().close();
-        }
-    };
+    private static final Thread CLOSE_THREAD = new Thread(() -> {
+        if (isOpen())
+            getDriver().close();
+    });
 
     static {
         Runtime.getRuntime().addShutdownHook(CLOSE_THREAD);
@@ -54,71 +44,8 @@ public class Browser {
     }
 
     public static void open(@NotNull String URL) {
-        loadConfigBeforeCreatingDriver();
         setBrowserOnFirstRunOrAfterClosure();
-        try {
-            getDriver().get(URL);
-        } catch (UninitialisedDriverException e){}
-    }
-
-    private static void setBrowserOnFirstRunOrAfterClosure() {
-        // This exception is handled as this method throws an exception on the first run as driver won't be set
-        try {
-            getDriver();
-        } catch (UninitialisedDriverException e) {
-            setDriver(getNewInstance(getName(Properties.get("browser", true))));
-        }
-
-        // Sets a new driver instance if the current one has been closed. Note that closing a driver only alters the
-        // state of the driver object and doesn't delete it. Browser#isClosed checks which state the driver is in
-        if(isClosed()){
-            setDriver(getNewInstance(getName(Properties.get("browser", true))));
-        }
-    }
-
-    public static boolean isClosed() {
-        boolean isBrowserClosed = true;
-
-        if(isInitialised()){
-            // UninitialisedDriverException won't ever be thrown as its state is checked by #isInitialised before
-            try {
-                isBrowserClosed = getDriver().toString().contains("null");
-            } catch (UninitialisedDriverException e) {
-            }
-        }
-
-        return isBrowserClosed;
-    }
-
-    public static boolean isNotClosed(){
-        return !isClosed();
-    }
-
-    public static boolean isInitialised(){
-        boolean isInitialised = true;
-
-        try {
-            getDriver();
-        } catch (UninitialisedDriverException e) {
-            isInitialised = false;
-        }
-
-        return isInitialised;
-    }
-
-    private static void loadConfigBeforeCreatingDriver(){
-        try {
-            getDriver();
-        } catch (UninitialisedDriverException exception) {
-            // Adds properties specified in properties/config.properties into system properties
-            if(java.nio.file.Files.exists(Paths.get("properties/config.properties"))) {
-                try {
-                    Properties.loadConfigPropertiesFromFile();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        getDriver().get(URL);
     }
 
     public static void go(@NotNull String URL) {
@@ -129,23 +56,36 @@ public class Browser {
         open(URL);
     }
 
+    private static void setBrowserOnFirstRunOrAfterClosure() {
+        if (Browser.driver == null || isClosed())
+            setDriver(getNewInstance(BrowserEnum.getEnum(Properties.get("browser", true))));
+    }
+
+    public static boolean isClosed() {
+        boolean isBrowserClosed = true;
+        if (org.dvsa.testing.lib.browser.Browser.driver != null && !getDriver().toString().contains("null")){
+            isBrowserClosed = false;
+        }
+        return isBrowserClosed;
+    }
+
+    public static boolean isOpen(){
+        return !isClosed();
+    }
+
     public static void quit(){
-        if(!isClosed()){
+        if(isOpen()){
             if (Thread.currentThread() != CLOSE_THREAD) {
                 throw new UnsupportedOperationException("You shouldn't quit this WebDriver. It's shared and will quit when the JVM exits.");
             }
-            try {
-                getDriver().quit();
-            } catch (UninitialisedDriverException e) {
-                e.printStackTrace();
-            }
+            getDriver().quit();
         }
     }
 
-    private static WebDriver getNewInstance(BrowserName browserName){
+    private static WebDriver getNewInstance(BrowserEnum browser){
         WebDriver driver;
 
-        switch(browserName){
+        switch(browser){
             case CHROME:
                 ChromeDriverManager.getInstance().setup();
                 driver = new ChromeDriver();
@@ -155,27 +95,10 @@ public class Browser {
                 driver = new FirefoxDriver();
                 break;
             default:
-                throw new IllegalArgumentException(String.format(unsupportedBrowserTemplate, browserName));
+                throw new IllegalArgumentException(String.format(unsupportedBrowserTemplate, browser));
         }
 
         return driver;
-    }
-
-    private static BrowserName getName(@NotNull String name){
-        name = name.toLowerCase().trim();
-        BrowserName browserName;
-
-        switch(name){
-            case "chrome":
-                browserName = CHROME;
-                break;
-            case "firefox":
-                browserName = FIREFOX;
-                break;
-            default:
-                throw new IllegalArgumentException(String.format(unsupportedBrowserTemplate, name));
-        }
-        return browserName;
     }
 
     public static String getURL() {
