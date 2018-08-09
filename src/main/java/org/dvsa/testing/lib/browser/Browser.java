@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
@@ -178,8 +179,8 @@ public class Browser {
         return browserName;
     }
 
-    public static String getURL() {
-        return getDriver().getCurrentUrl();
+    public static URL getURL() throws MalformedURLException {
+        return new URL(getDriver().getCurrentUrl());
     }
 
     public static String getPageTitle() {
