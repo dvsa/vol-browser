@@ -183,6 +183,18 @@ public class Browser {
         return new URL(getDriver().getCurrentUrl());
     }
 
+    public static boolean isPath(@NotNull String path) {
+        boolean matches = false;
+
+        try {
+            matches =  Browser.getURL().getPath().equals(path);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return matches;
+    }
+
     public static String getPageTitle() {
         return getDriver().getTitle();
     }
