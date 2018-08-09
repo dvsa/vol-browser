@@ -187,7 +187,7 @@ public class Browser {
         boolean matches = false;
 
         try {
-            matches =  Browser.getURL().getPath().equals(path);
+            matches =  Browser.getURL().getPath().contains(path);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
