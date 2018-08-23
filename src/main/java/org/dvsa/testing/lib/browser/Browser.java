@@ -144,7 +144,7 @@ public class Browser {
                 klass = SafariOptions.class;
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported browser: ".concat(browser));
+                throw new IllegalArgumentException(String.format(unsupportedBrowserTemplate, browser));
         }
 
         return klass;
@@ -167,7 +167,7 @@ public class Browser {
                 klass = SafariDriver.class;
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported browser: ".concat(browser));
+                throw new IllegalArgumentException(String.format(unsupportedBrowserTemplate, browser));
         }
 
         return klass;
