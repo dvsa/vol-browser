@@ -173,8 +173,20 @@ public class Browser {
         return klass;
     }
 
-    public static String getURL() {
-        return getDriver().getCurrentUrl();
+    public static URL getURL() throws MalformedURLException {
+        return new URL(getDriver().getCurrentUrl());
+    }
+
+    public static boolean isPath(@NotNull String path) {
+        boolean matches = false;
+
+        try {
+            matches =  Browser.getURL().getPath().contains(path);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return matches;
     }
 
     public static String getPageTitle() {
