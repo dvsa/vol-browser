@@ -1,49 +1,48 @@
 import activesupport.MissingRequiredArgument;
-import activesupport.file.Files;
 import activesupport.system.Properties;
 import org.dvsa.testing.lib.browser.Browser;
-import org.dvsa.testing.lib.browser.exceptions.UninitialisedDriverException;
 import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
-import org.dvsa.testing.lib.url.utils.EnvironmentType;
 import org.junit.*;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class BrowserTest {
 
-        private static EnvironmentType environmentType;
         private static java.net.URL myURL;
 
     @BeforeClass
     public static void beforeAll() throws IOException {
-        if(System.getProperty("env") == null){
-            Properties.writeToConfigPropertyFile("env", "da");
+        if(Properties.get("env") == null){
+            Properties.set("env", "da");
         }
 
-        if(System.getProperty("browser") == null){
-            Properties.writeToConfigPropertyFile("browser", "chrome");
+        if(Properties.get("browser") == null){
+            Properties.set("browser", "chrome");
         }
 
-        Properties.loadConfigPropertiesFromFile();
-        environmentType = EnvironmentType.getEnum(System.getProperty("env"));
-        myURL = URL.build(ApplicationType.EXTERNAL, environmentType, "auth/login/");
+        myURL = URL.build(ApplicationType.EXTERNAL, Properties.get("env"), "auth/login/");
     }
 
     @Before
     public void setUp() throws MissingRequiredArgument {
+        MutableCapabilities caps = new MutableCapabilities();
+        caps.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+        caps.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+        Browser.initialise(Properties.get("browser", true));
         Browser.open(myURL);
     }
 
     @Test
-    public void goToLogonPage() throws UninitialisedDriverException {
+    public void goToLogonPage() {
         Assert.assertEquals(myURL.toString(), Browser.getURL());
     }
 
     @After
-    public void tearDown() throws IOException {
-        Files.deleteFolderAndItsContent(Paths.get("properties/config.properties"));
+    public void tearDown() {
+        Browser.getDriver().close();
     }
 
 }
