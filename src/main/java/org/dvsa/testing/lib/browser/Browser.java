@@ -19,6 +19,8 @@ import org.openqa.selenium.safari.SafariOptions;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Browser {
 
@@ -180,9 +182,10 @@ public class Browser {
 
     public static boolean isPath(@NotNull String path) {
         boolean matches = false;
-
         try {
-            matches =  Browser.getURL().getPath().contains(path);
+            Pattern p  = Pattern.compile(path);
+            Matcher m  = p.matcher(Browser.getURL().getPath());
+            matches = m.find();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
