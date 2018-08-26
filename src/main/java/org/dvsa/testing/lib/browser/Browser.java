@@ -17,6 +17,7 @@ import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.Constructor;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Browser {

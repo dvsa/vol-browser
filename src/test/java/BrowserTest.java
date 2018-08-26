@@ -3,11 +3,14 @@ import activesupport.system.Properties;
 import org.dvsa.testing.lib.browser.Browser;
 import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.StringContains;
 import org.junit.*;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class BrowserTest {
 
@@ -36,8 +39,8 @@ public class BrowserTest {
     }
 
     @Test
-    public void goToLogonPage() {
-        Assert.assertEquals(myURL.toString(), Browser.getURL());
+    public void goToLogonPage() throws MalformedURLException {
+        Assert.assertThat(Browser.getURL().toString(), new StringContains(myURL.toString()));
     }
 
     @After
