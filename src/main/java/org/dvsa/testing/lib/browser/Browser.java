@@ -198,11 +198,13 @@ public class Browser {
     }
 
     public static void deleteCookies() {
-        getDriver().manage().deleteAllCookies();
+        if (!isUninitialisedOrClosed())
+            getDriver().manage().deleteAllCookies();
     }
 
     public static void refresh() {
-        getDriver().navigate().refresh();
+        if (!isUninitialisedOrClosed())
+            getDriver().navigate().refresh();
     }
 
 }
