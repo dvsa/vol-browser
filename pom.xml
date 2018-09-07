@@ -14,7 +14,7 @@
         <uri-constructor.version>1.4.3</uri-constructor.version>
         <junit.version>4.12</junit.version>
         <aws-maven.version>5.0.0.RELEASE</aws-maven.version>
-        <active-support.version>1.2.5</active-support.version>
+        <active-support.version>1.2.6.EUPA</active-support.version>
         <slf4j-nop.version>1.7.25</slf4j-nop.version>
     </properties>
 
