@@ -3,6 +3,7 @@ package org.dvsa.testing.lib.browser;
 import activesupport.system.Properties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.StringUtils;
+import org.dvsa.testing.lib.browser.exceptions.WaitException;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -20,6 +21,7 @@ import org.openqa.selenium.safari.SafariOptions;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -230,6 +232,34 @@ public class Browser {
     public static void refresh() {
         if (!isUninitialisedOrClosed())
             getDriver().navigate().refresh();
+    }
+
+    public static class Wait {
+
+        public static void untilUrlPathIs(@NotNull String pattern, TimeUnit unit, long duration) {
+            boolean matches = false;
+            long durationInMilliseconds = unit.toMillis(duration);
+
+            while( durationInMilliseconds > 0){
+                try {
+                    Pattern p  = Pattern.compile(pattern);
+                    Matcher m  = p.matcher(Browser.getURL().getPath());
+                    matches = m.find();
+
+                    if (!matches)
+                        TimeUnit.MILLISECONDS.sleep(500L);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                durationInMilliseconds-= 500L;
+            }
+
+            if (!matches)
+                throw new WaitException();
+        }
+
     }
 
 }
