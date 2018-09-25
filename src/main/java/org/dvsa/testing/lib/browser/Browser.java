@@ -1,5 +1,6 @@
 package org.dvsa.testing.lib.browser;
 
+import activesupport.system.Properties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -79,7 +80,31 @@ public class Browser {
     }
 
     public static void initialise(@NotNull String browser) {
-        initialise(browser, null);
+        MutableCapabilities defaultCapabilities = defaultCapabilities(browser);
+        initialise(browser, defaultCapabilities);
+    }
+
+    private static MutableCapabilities defaultCapabilities(@NotNull String browser) {
+        MutableCapabilities capabilities = new MutableCapabilities();
+        boolean headless = true;
+
+        if (Properties.get("headless") != null)
+            headless = Boolean.valueOf(Properties.get("headless").trim());
+
+        switch (browser.toLowerCase().trim()) {
+            case "chrome":
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setAcceptInsecureCerts(true);
+                chromeOptions.setHeadless(headless);
+                break;
+            case "firefox":
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.setAcceptInsecureCerts(true);
+                firefoxOptions.setHeadless(headless);
+                firefoxOptions.setCapability("marionette", true);
+        }
+
+        return capabilities;
     }
 
     public static <T extends MutableCapabilities> void initialise(@NotNull String browser, T capabilities) {
