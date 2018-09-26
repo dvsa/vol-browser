@@ -138,7 +138,8 @@ public class Browser {
             Class<? extends WebDriver> driverClass = getDriverClass(browser);
             Class<? extends MutableCapabilities> constructorParameterType;
 
-            WebDriverManager.getInstance(driverClass).setup();
+            if (Boolean.parseBoolean(Properties.get("webdriver-manager")))
+                WebDriverManager.getInstance(driverClass).setup();
 
             WebDriver driver;
 
