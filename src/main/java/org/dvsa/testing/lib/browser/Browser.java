@@ -135,10 +135,17 @@ public class Browser {
 
     private static <T extends MutableCapabilities> WebDriver localWebDriver(@NotNull String browser, T capabilities) {
         try {
+            boolean useWebDrierManager = false;
+            if (Properties.get("webdriver-manager") == null){
+                useWebDrierManager = true;
+            } else {
+                Boolean.parseBoolean(Properties.get("webdriver-manager"));
+            }
+
             Class<? extends WebDriver> driverClass = getDriverClass(browser);
             Class<? extends MutableCapabilities> constructorParameterType;
 
-            if (Boolean.parseBoolean(Properties.get("webdriver-manager")))
+            if (useWebDrierManager)
                 WebDriverManager.getInstance(driverClass).setup();
 
             WebDriver driver;
