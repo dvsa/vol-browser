@@ -1,4 +1,4 @@
-package util;
+package org.dvsa.testing.lib.browser.util;
 
 import activesupport.system.Properties;
 
