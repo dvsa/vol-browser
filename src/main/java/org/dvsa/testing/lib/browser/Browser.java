@@ -104,6 +104,7 @@ public class Browser {
                 firefoxOptions.setAcceptInsecureCerts(true);
                 firefoxOptions.setHeadless(headless);
                 firefoxOptions.setCapability("marionette", true);
+                firefoxOptions.addArguments("-headless");
         }
 
         return capabilities;
