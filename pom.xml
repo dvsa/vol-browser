@@ -9,8 +9,8 @@
     <version>0.6.6</version>
 
     <properties>
-        <web-driver-manager.version>2.0.0</web-driver-manager.version>
-        <selenium.version>3.7.1</selenium.version>
+        <web-driver-manager.version>4.0.0</web-driver-manager.version>
+        <selenium.version>3.141.0</selenium.version>
         <uri-constructor.version>1.4.3</uri-constructor.version>
         <junit.version>4.12</junit.version>
         <aws-maven.version>5.0.0.RELEASE</aws-maven.version>
